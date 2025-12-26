@@ -5,10 +5,9 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.example.demo.DTO.AddSubjectsToCurriculum;
 import com.example.demo.DTO.CurriculumSubjectResponse;
+import com.example.demo.common.ServiceException;
 import com.example.demo.entity.Curriculum;
 import com.example.demo.entity.CurriculumSubject;
 import com.example.demo.entity.Subject;
@@ -34,14 +33,14 @@ public class AdminCurriculumSubjectService {
     public void addSubjects(UUID curriculumId, AddSubjectsToCurriculum request) {
 
         Curriculum curriculum = curriculumRepository.findById(curriculumId)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Curriculum not found"));
+            .orElseThrow(() -> new ServiceException(
+            		"Curriculum not found", HttpStatus.NOT_FOUND));
 
         for (UUID subjectId : request.getSubjectIds()) {
 
             Subject subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Subject not found"));
+                .orElseThrow(() -> new ServiceException(
+                		 "Subject not found",HttpStatus.NOT_FOUND));
 
             if (curriculumSubjectRepository
                     .existsByCurriculumIdAndSubjectId(curriculumId, subjectId)) {
@@ -59,18 +58,16 @@ public class AdminCurriculumSubjectService {
     public List<CurriculumSubjectResponse> getSubjectsByCurriculum(
             UUID curriculumId) {
 
-        // 1️⃣ Validate curriculum
+       
         if (!curriculumRepository.existsById(curriculumId)) {
-            throw new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Curriculum not found");
+            throw new ServiceException(
+            		 "Curriculum not found", HttpStatus.NOT_FOUND);
         }
 
-        // 2️⃣ Fetch mappings
         List<CurriculumSubject> mappings =
                 curriculumSubjectRepository
                         .findByCurriculumId(curriculumId);
 
-        // 3️⃣ Map to response
         return mappings.stream()
                 .map(cs -> new CurriculumSubjectResponse(
                         cs.getSubject().getId(),

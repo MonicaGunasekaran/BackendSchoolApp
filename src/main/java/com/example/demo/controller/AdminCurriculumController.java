@@ -1,8 +1,9 @@
 package com.example.demo.controller;
 
-
+import java.util.Map;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,24 +27,26 @@ public class AdminCurriculumController {
     }
 
     @PostMapping
-    public ApiResponse<Curriculum> createCurriculum(
+    public ResponseEntity<Map<String,Object>> createCurriculum(
             @RequestBody CreateCurriculum request) {
 
         Curriculum curriculum =
                 adminCurriculumService.createCurriculum(request);
 
-        return ApiResponse.success(
+        return ApiResponse.getResponse(
+        		true,
                 "Curriculum created successfully",
                 curriculum
         );
     }
     @GetMapping
-    public ApiResponse<List<CurriculumResponse>> getAllCurriculums() {
+    public ResponseEntity<Map<String,Object>> getAllCurriculums() {
 
         List<CurriculumResponse> curriculums =
                 adminCurriculumService.getAllCurriculums();
 
-        return ApiResponse.success(
+        return ApiResponse.getResponse(
+        		true,
                 "Curriculums fetched successfully",
                 curriculums
         );

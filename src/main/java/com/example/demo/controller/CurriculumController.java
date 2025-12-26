@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,13 +25,14 @@ public class CurriculumController {
     }
 
     @GetMapping("/{curriculumId}/subjects")
-    public ApiResponse<List<CurriculumSubjectResponse>> getSubjects(
+    public ResponseEntity<Map<String,Object>> getSubjects(
             @PathVariable UUID curriculumId) {
 
         List<CurriculumSubjectResponse> subjects =
                 curriculumService.getSubjectsByCurriculum(curriculumId);
 
-        return ApiResponse.success(
+        return ApiResponse.getResponse(
+                true,
                 "Subjects fetched successfully",
                 subjects
         );

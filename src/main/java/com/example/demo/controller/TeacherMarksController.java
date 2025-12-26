@@ -1,11 +1,13 @@
 package com.example.demo.controller;
 
 import com.example.demo.DTO.PublishMarkRequest;
-import com.example.demo.DTO.PublishMarks;
 import com.example.demo.common.ApiResponse;
 import com.example.demo.service.TeacherMarksService;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -18,14 +20,14 @@ public class TeacherMarksController {
         this.teacherMarksService = teacherMarksService;
     }
     @PostMapping("/{classId}/students/{studentId}/marks")
-    public ApiResponse<Void> publishMarks(
+    public ResponseEntity<Map<String,Object>> publishMarks(
             @PathVariable UUID classId,
             @PathVariable UUID studentId,
-            @RequestBody PublishMarkRequest request) {   // ✅ CORRECT
+            @RequestBody PublishMarkRequest request) {
 
         teacherMarksService.publishMarks(classId, studentId, request);
 
-        return ApiResponse.success("Marks published successfully", null);
+        return ApiResponse.getResponse(true,"Marks published successfully", null);
     }
 }
 

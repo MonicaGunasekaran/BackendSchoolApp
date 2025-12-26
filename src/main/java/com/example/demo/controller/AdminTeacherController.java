@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
+import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,13 +27,13 @@ public class AdminTeacherController {
     /**/
 
     @PostMapping
-    public ApiResponse<TeacherResponse> createTeacher(
+    public ResponseEntity<Map<String,Object>> createTeacher(
             @PathVariable UUID schoolId,
             @RequestBody CreateTeacher request) {
         TeacherResponse response =
                 adminTeacherService.createTeacher(schoolId, request);
 
-            return ApiResponse.success(
+            return ApiResponse.getResponse(true,
                 "Teacher created successfully",
                 response
             );

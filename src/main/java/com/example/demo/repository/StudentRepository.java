@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import com.example.demo.DTO.Student;
 import com.example.demo.entity.CurriculumSubject;
 import com.example.demo.entity.StudentEntity;
 import com.example.demo.entity.StudentProfile;

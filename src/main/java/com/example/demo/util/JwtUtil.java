@@ -23,7 +23,6 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    // ✅ ALREADY CORRECT
     public String generateToken(User user) {
 
         return Jwts.builder()
@@ -36,9 +35,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    // 🔽 ADD BELOW METHODS 🔽
-
-    // ✅ Extract all claims
     public Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -46,25 +42,20 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
     }
-
-    // ✅ Extract email
     public String extractEmail(String token) {
         return extractAllClaims(token).get("email", String.class);
     }
 
-    // ✅ Extract role
     public String extractRole(String token) {
         return extractAllClaims(token).get("role", String.class);
     }
 
-    // ✅ Validate token expiration
     public boolean isTokenExpired(String token) {
         return extractAllClaims(token)
                 .getExpiration()
                 .before(new Date());
     }
 
-    // ✅ Final validation method
     public boolean validateToken(String token) {
         try {
             extractAllClaims(token);

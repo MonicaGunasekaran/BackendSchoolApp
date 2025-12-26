@@ -1,4 +1,6 @@
-package com.example.demo.DTO;
+/*
+ * 
+ * package com.example.demo.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,3 +14,5 @@ public class SchoolResponse {
     private String name;
     private String address;
 }
+*/
+ 

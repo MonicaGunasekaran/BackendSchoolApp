@@ -3,9 +3,12 @@ package com.example.demo.controller;
 import com.example.demo.DTO.*;
 import com.example.demo.common.ApiResponse;
 import com.example.demo.service.TeacherStudentService;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -20,28 +23,31 @@ public class TeacherStudentController {
 
     // ✅ CREATE STUDENT
     @PostMapping
-    public ApiResponse<StudentResponse> createStudent(
+    public ResponseEntity<Map<String,Object>> createStudent(
             @PathVariable UUID classId,
-            @RequestBody CreateStudent request) {
+            @RequestBody Student request) {
 
-        StudentResponse response =
+        Student response =
                 teacherStudentService.createStudent(classId, request);
 
-        return ApiResponse.success(
+        return ApiResponse.getResponse(
+                true,
                 "Student created successfully",
                 response
         );
     }
 
+
     // ✅ LIST STUDENTS
     @GetMapping
-    public ApiResponse<List<StudentResponse>> getStudents(
+    public ResponseEntity<Map<String,Object>> getStudents(
             @PathVariable UUID classId) {
 
-        List<StudentResponse> students =
+        List<Student> students =
                 teacherStudentService.getStudents(classId);
 
-        return ApiResponse.success(
+        return ApiResponse.getResponse(
+        		true,
                 "Students fetched successfully",
                 students
         );

@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.DTO.StudentResultResponse;
 import com.example.demo.DTO.SubjectResult;
+import com.example.demo.common.ServiceException;
 import com.example.demo.entity.MarkEntity;
 import com.example.demo.entity.StudentEntity;
 import com.example.demo.entity.Subject;
@@ -41,26 +41,28 @@ public class StudentResultService {
 
     public StudentResultResponse getStudentResults() {
 
-        // 1️⃣ Logged-in student email from JWT
+        // Logged-in student email from JWT
         String email = SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.UNAUTHORIZED, "User not found"));
+                .orElseThrow(() -> new ServiceException(
+                         "User not found",HttpStatus.UNAUTHORIZED));
 
         if (user.getRole() != RolesEnum.STUDENT) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN, "Only students can view results");
+            throw new ServiceException(
+            		"Only students can view results", HttpStatus.FORBIDDEN);
         }
 
-        // 2️⃣ Student profile
+        //Student profile
         StudentEntity student = studentRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Student profile not found"));
+                .orElseThrow(() -> new 
+                		
+                		ServiceException(
+                       "Student profile not found",  HttpStatus.NOT_FOUND));
 
-        // 3️⃣ Fetch marks
+        //Fetch marks
         List<MarkEntity> marks =
                 markRepository.findByStudentId(student.getId());
         String status = "PASS";
@@ -71,14 +73,14 @@ public class StudentResultService {
                 break;
             }
         }
-        // 4️⃣ Map subject names
+        //Map subject names
         List<SubjectResult> subjectResults = marks.stream()
                 .map(mark -> {
                     Subject subject = subjectRepository.findById(
                             mark.getSubjectId())
-                            .orElseThrow(() -> new ResponseStatusException(
-                                    HttpStatus.INTERNAL_SERVER_ERROR,
-                                    "Subject missing"));
+                            .orElseThrow(() -> new ServiceException(
+                            		"Subject missing", HttpStatus.INTERNAL_SERVER_ERROR
+                                    ));
 
                     return new SubjectResult(
                             subject.getName(),
@@ -87,7 +89,7 @@ public class StudentResultService {
                 })
                 .toList();
 
-        // 5️⃣ Response
+        //Response
         return new StudentResultResponse(
                 student.getName(),
                 student.getRollNumber(),

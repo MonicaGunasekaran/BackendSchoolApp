@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.DTO.*;
+import com.example.demo.common.ServiceException;
 import com.example.demo.enumeration.RolesEnum;
 import com.example.demo.entity.SchoolEntity;
 import com.example.demo.entity.User;
@@ -12,7 +13,6 @@ import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AdminTeacherService {
@@ -33,16 +33,12 @@ public class AdminTeacherService {
                                          CreateTeacher request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Email already exists"
-            );
+            throw new ServiceException("This mail is already registered",HttpStatus.CONFLICT);
         }
 
         SchoolEntity school = schoolRepository.findById(schoolId)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "School not found"
+            .orElseThrow(() -> new ServiceException(
+            		"School Not Found",HttpStatus.NOT_FOUND
             ));
 
         User teacher = User.builder()

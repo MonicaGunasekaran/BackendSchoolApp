@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.example.demo.DTO.MarkResponse;
 import com.example.demo.DTO.PublishMarkRequest;
 import com.example.demo.DTO.SubjectMark;
+import com.example.demo.common.ServiceException;
 import com.example.demo.entity.ClassRoom;
 import com.example.demo.entity.MarkEntity;
 import com.example.demo.entity.StudentEntity;
@@ -54,8 +55,8 @@ public class TeacherMarksService {
 
         // Verify subject exists
         subjectRepository.findById(subjectId)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Subject not found"));
+            .orElseThrow(() -> new ServiceException(
+            		"Subject not found", HttpStatus.NOT_FOUND));
 
         markRepository.findByStudentIdAndSubjectId(student.getId(), subjectId)
             .ifPresentOrElse(
@@ -81,42 +82,42 @@ public class TeacherMarksService {
             PublishMarkRequest request) {
 
         if (request.getSubjects() == null || request.getSubjects().isEmpty()) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "No subjects provided");
+            throw new ServiceException(
+            		 "No subjects provided",HttpStatus.BAD_REQUEST);
         }
 
-        // 1️⃣ Logged-in teacher
+        //  Logged-in teacher
         String email = SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
 
         User teacher = userRepository.findByEmail(email)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.UNAUTHORIZED, "Teacher not found"));
+            .orElseThrow(() -> new ServiceException(
+                 "Teacher not found",HttpStatus.UNAUTHORIZED));
 
         if (teacher.getRole() != RolesEnum.TEACHER) {
-            throw new ResponseStatusException(
-                HttpStatus.FORBIDDEN, "Only teachers can publish marks");
+            throw new ServiceException(
+            		"Only teachers can publish marks",  HttpStatus.FORBIDDEN);
         }
 
-        // 2️⃣ Verify class
+        //  Verify class
         ClassRoom classRoom = classRoomRepository.findById(classId)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Class not found"));
+            .orElseThrow(() -> new ServiceException(
+                "Class not found", HttpStatus.NOT_FOUND));
 
         if (!classRoom.getTeacherId().equals(teacher.getId())) {
-            throw new ResponseStatusException(
-                HttpStatus.FORBIDDEN, "You do not own this class");
+            throw new ServiceException(
+            		"You do not own this class", HttpStatus.FORBIDDEN);
         }
 
-        // 3️⃣ Verify student
+        // Verify student
         StudentEntity student = studentRepository.findById(studentId)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Student not found"));
+            .orElseThrow(() -> new ServiceException(
+            		"Student not found", HttpStatus.NOT_FOUND ));
 
         if (!student.getClassId().equals(classId)) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "Student does not belong to this class");
+            throw new ServiceException(
+               "Student does not belong to this class", HttpStatus.BAD_REQUEST);
         }
 
         // 4️⃣ Loop subjects
@@ -138,32 +139,32 @@ public class TeacherMarksService {
                 .getName();
 
         User teacher = userRepository.findByEmail(email)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.UNAUTHORIZED, "Teacher not found"));
+            .orElseThrow(() -> new ServiceException(
+            		"Teacher not found", HttpStatus.UNAUTHORIZED));
 
         if (teacher.getRole() != RolesEnum.TEACHER) {
-            throw new ResponseStatusException(
-                HttpStatus.FORBIDDEN, "Only teachers can view marks");
+            throw new ServiceException(
+            		"Only teachers can view marks", HttpStatus.FORBIDDEN);
         }
 
         // 2️⃣ Verify class
         ClassRoom classRoom = classRoomRepository.findById(classId)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Class not found"));
+            .orElseThrow(() -> new ServiceException(
+                "Class not found", HttpStatus.NOT_FOUND));
 
         if (!classRoom.getTeacherId().equals(teacher.getId())) {
-            throw new ResponseStatusException(
-                HttpStatus.FORBIDDEN, "You do not own this class");
+            throw new ServiceException(
+            		"You do not own this class", HttpStatus.FORBIDDEN);
         }
 
         // 3️⃣ Verify student
         StudentEntity student = studentRepository.findById(studentId)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Student not found"));
+            .orElseThrow(() -> new ServiceException(
+            		 "Student not found",HttpStatus.NOT_FOUND));
 
         if (!student.getClassId().equals(classId)) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "Student does not belong to this class");
+            throw new ServiceException(
+            		 "Student does not belong to this class", HttpStatus.BAD_REQUEST);
         }
 
         // 4️⃣ Fetch marks
@@ -175,9 +176,9 @@ public class TeacherMarksService {
                 .map(mark -> {
                     Subject subject = subjectRepository.findById(
                             mark.getSubjectId()
-                    ).orElseThrow(() -> new ResponseStatusException(
-                            HttpStatus.INTERNAL_SERVER_ERROR,
-                            "Subject missing for mark"
+                    ).orElseThrow(() -> new ServiceException(
+                            
+                            "Subject missing for mark",HttpStatus.INTERNAL_SERVER_ERROR
                     ));
 
                     return new MarkResponse(

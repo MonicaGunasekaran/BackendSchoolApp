@@ -1,14 +1,11 @@
 package com.example.demo.service;
-
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.example.demo.DTO.CreateCurriculum;
 import com.example.demo.DTO.CurriculumResponse;
+import com.example.demo.common.ServiceException;
 import com.example.demo.entity.Curriculum;
 import com.example.demo.repository.CurriculumRepository;
 
@@ -25,9 +22,10 @@ public class AdminCurriculumService {
 
         if (curriculumRepository.findByGradeAndSection(
                 request.getGrade(), request.getSection()).isPresent()) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Curriculum already exists for this grade and section"
+            throw new ServiceException(
+            		"Curriculum already exists for this grade and section",
+                HttpStatus.BAD_REQUEST
+                
             );
         }
 

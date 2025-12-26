@@ -6,7 +6,9 @@ import com.example.demo.common.ApiResponse;
 import com.example.demo.service.TeacherClassService;
 
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,24 +22,24 @@ public class TeacherClassController {
     }
 
     @PostMapping
-    public ApiResponse<ClassRoom> createClass(
+    public ResponseEntity<Map<String,Object>> createClass(
             @RequestBody CreateClass request) {
 
         ClassRoom classRoom =
             teacherClassService.createClass(request);
 
-        return ApiResponse.success(
+        return ApiResponse.getResponse(true,
             "Class created successfully",
             classRoom
         );
     }
     
     @GetMapping
-    public ApiResponse<List<ClassRoom>> getMyClasses() {
+    public ResponseEntity<Map<String,Object>> getMyClasses() {
 
         List<ClassRoom> classes =
                 teacherClassService.getAllClasses();
-        return ApiResponse.success(
+        return ApiResponse.getResponse(true,
                 "Classes fetched successfully",
                 classes
         );

@@ -23,6 +23,7 @@ public class User {
 
     @Id
     @GeneratedValue
+    
     private UUID id;
 
     @Column(nullable = false)

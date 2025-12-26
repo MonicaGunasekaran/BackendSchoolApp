@@ -1,20 +1,20 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.ClassRoom;
-import com.example.demo.entity.Curriculum;
-import com.example.demo.entity.User;
-import com.example.demo.repository.ClassRoomRepository;
-import com.example.demo.repository.CurriculumRepository;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.DTO.CreateClass;
-import com.example.demo.enumeration.RolesEnum;
-
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+
+import com.example.demo.DTO.CreateClass;
+import com.example.demo.common.ServiceException;
+import com.example.demo.entity.ClassRoom;
+import com.example.demo.entity.Curriculum;
+import com.example.demo.entity.User;
+import com.example.demo.enumeration.RolesEnum;
+import com.example.demo.repository.ClassRoomRepository;
+import com.example.demo.repository.CurriculumRepository;
+import com.example.demo.repository.UserRepository;
 
 @Service
 public class TeacherClassService {
@@ -23,7 +23,7 @@ public class TeacherClassService {
     private final UserRepository userRepository;
     private final CurriculumRepository curriculumRepository;
 
-    // ✅ FIXED CONSTRUCTOR
+    //FIXED CONSTRUCTOR
     public TeacherClassService(ClassRoomRepository classRoomRepository,
                                UserRepository userRepository,
                                CurriculumRepository curriculumRepository) {
@@ -32,7 +32,7 @@ public class TeacherClassService {
         this.curriculumRepository = curriculumRepository;
     }
 
-    // ✅ CREATE CLASS
+    // CREATE CLASS
     public ClassRoom createClass(CreateClass request) {
 
         String email = SecurityContextHolder.getContext()
@@ -40,39 +40,39 @@ public class TeacherClassService {
                 .getName();
 
         User teacher = userRepository.findByEmail(email)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.UNAUTHORIZED,
-                "Teacher not found"
+            .orElseThrow(() -> new ServiceException(
+            		"Teacher not found",HttpStatus.UNAUTHORIZED
+                
             ));
 
         if (teacher.getRole() != RolesEnum.TEACHER) {
-            throw new ResponseStatusException(
-                HttpStatus.FORBIDDEN,
-                "Only teachers can create classes"
+            throw new ServiceException(
+                
+                "Only teachers can create classes",HttpStatus.FORBIDDEN
             );
         }
 
-        // ✅ FIND CURRICULUM (MANDATORY)
+        // FIND CURRICULUM (MANDATORY)
         Curriculum curriculum = curriculumRepository
             .findByGradeAndSection(request.getGrade(), request.getSection())
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "No curriculum defined for this grade and section"
+            .orElseThrow(() -> new ServiceException(
+                
+                "No curriculum defined for this grade and section",HttpStatus.BAD_REQUEST
             ));
 
-        // ✅ PREVENT DUPLICATE CLASS
+        // PREVENT DUPLICATE CLASS
         if (classRoomRepository.existsBySchoolIdAndGradeAndSection(
                 teacher.getSchoolId(),
                 request.getGrade(),
                 request.getSection()
         )) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Class already exists in this school"
+            throw new ServiceException(
+               
+                "Class already exists in this school", HttpStatus.BAD_REQUEST
             );
         }
 
-        // ✅ CREATE CLASS WITH curriculumId
+        // CREATE CLASS WITH curriculumId
         ClassRoom classRoom = ClassRoom.builder()
                 .grade(request.getGrade())
                 .section(request.getSection())
@@ -84,7 +84,7 @@ public class TeacherClassService {
         return classRoomRepository.save(classRoom);
     }
 
-    // ✅ LIST CLASSES
+    // LIST CLASSES
     public List<ClassRoom> getAllClasses() {
 
         String email = SecurityContextHolder.getContext()
@@ -93,16 +93,17 @@ public class TeacherClassService {
 
         User teacher = userRepository.findByEmail(email)
             .orElseThrow(() ->
-                new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED,
-                    "Teacher not found"
+                new ServiceException(
+                		   "Teacher not found",
+                    HttpStatus.UNAUTHORIZED
+                 
                 )
             );
 
         if (teacher.getRole() != RolesEnum.TEACHER) {
-            throw new ResponseStatusException(
-                HttpStatus.FORBIDDEN,
-                "Only teachers can view classes"
+            throw new ServiceException(
+               
+                "Only teachers can view classes", HttpStatus.FORBIDDEN
             );
         }
 

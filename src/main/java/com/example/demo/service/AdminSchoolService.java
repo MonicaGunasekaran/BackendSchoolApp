@@ -1,5 +1,6 @@
 package com.example.demo.service;
-import com.example.demo.DTO.SchoolResponse;
+import com.example.demo.DTO.School;
+import com.example.demo.common.ServiceException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,17 +14,14 @@ import org.springframework.stereotype.Service;
 import com.example.demo.DTO.*;
 @Service
 public class AdminSchoolService {
-
     private final SchoolRepository schoolRepository;
-
     public AdminSchoolService(SchoolRepository schoolRepository) {
         this.schoolRepository = schoolRepository;
     }
-
-    public SchoolResponse createSchool(CreateSchool request) {
+    public School createSchool(School request) {
 
         if (schoolRepository.existsByName(request.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"School Already exists");
+        	 throw new ServiceException("School already exists", HttpStatus.OK);
         }
 
         SchoolEntity school = SchoolEntity.builder()
@@ -33,23 +31,20 @@ public class AdminSchoolService {
 
         SchoolEntity saved = schoolRepository.save(school);
 
-        return new SchoolResponse(
-                saved.getId(),
+        return new School(
+                saved.getAddress(),
                 saved.getName(),
-                saved.getAddress()
+                saved.getId()
         );
     }
-    public List<SchoolResponse> getAllSchools() {
-
+    public List<School> getAllSchools() {
         List<SchoolEntity> schools = schoolRepository.findAll();
-
         return schools.stream()
-                .map(school -> new SchoolResponse(
-                        school.getId(),
+                .map(school -> new School(
+                        school.getAddress(),
                         school.getName(),
-                        school.getAddress()
+                        school.getId()
                 ))
                 .collect(Collectors.toList());
-    }
-    
+    }   
 }
