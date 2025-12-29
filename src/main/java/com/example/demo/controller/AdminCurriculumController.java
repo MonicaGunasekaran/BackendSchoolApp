@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +26,7 @@ public class AdminCurriculumController {
     public AdminCurriculumController(AdminCurriculumService adminCurriculumService) {
         this.adminCurriculumService = adminCurriculumService;
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Map<String,Object>> createCurriculum(
             @RequestBody CreateCurriculum request) {
@@ -39,6 +40,7 @@ public class AdminCurriculumController {
                 curriculum
         );
     }
+    @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
     @GetMapping
     public ResponseEntity<Map<String,Object>> getAllCurriculums() {
 

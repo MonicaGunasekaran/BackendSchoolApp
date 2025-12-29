@@ -9,6 +9,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class TeacherResponse {
     private UUID id;
+    private String name;
     private String email;
     private UUID schoolId;
 }

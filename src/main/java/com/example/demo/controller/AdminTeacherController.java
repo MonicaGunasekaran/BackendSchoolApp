@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,7 @@ import com.example.demo.common.ApiResponse;
 import com.example.demo.service.AdminTeacherService;
 
 @RestController
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/admin/schools/{schoolId}/teachers")
 public class AdminTeacherController {
 
@@ -24,8 +26,7 @@ public class AdminTeacherController {
     public AdminTeacherController(AdminTeacherService adminTeacherService) {
         this.adminTeacherService = adminTeacherService;
     }
-    /**/
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Map<String,Object>> createTeacher(
             @PathVariable UUID schoolId,

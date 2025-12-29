@@ -53,7 +53,7 @@ public class TeacherMarksService {
             UUID subjectId,
             Integer marks) {
 
-        // Verify subject exists
+       
         subjectRepository.findById(subjectId)
             .orElseThrow(() -> new ServiceException(
             		"Subject not found", HttpStatus.NOT_FOUND));

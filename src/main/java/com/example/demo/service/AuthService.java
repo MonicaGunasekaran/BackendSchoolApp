@@ -23,19 +23,28 @@ public class AuthService {
     }
 
     public LoginResponse login(LoginRequest request) {
+        try {
+            Authentication authentication =
+                authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                    )
+                );
 
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                request.getEmail(),
-                request.getPassword()
-            )
-        );
+            CustomUserDetails userDetails =
+                (CustomUserDetails) authentication.getPrincipal();
 
-        CustomUserDetails userDetails =
-            (CustomUserDetails) authentication.getPrincipal();
+            String token = jwtUtil.generateToken(userDetails.getUser());
 
-        String token = jwtUtil.generateToken(userDetails.getUser());
+            return new LoginResponse(
+                token,
+                userDetails.getUser().getRole().name()
+            );
 
-        return new LoginResponse(token, userDetails.getUser().getRole().name());
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid email or password");
+        }
     }
+
 }

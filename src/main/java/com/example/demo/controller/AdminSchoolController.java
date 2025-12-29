@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,15 +24,15 @@ public class AdminSchoolController {
     public AdminSchoolController(AdminSchoolService adminSchoolService) {
         this.adminSchoolService = adminSchoolService;
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Map<String, Object>> createSchool(@RequestBody School request) {
         School response=adminSchoolService.createSchool(request);
         return ApiResponse.getResponse(true,"School created successfully", response);
     }
+    @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
     @GetMapping
     public ResponseEntity<Map<String,Object>> getAllSchools() {
-
         List<School> schools =
                 adminSchoolService.getAllSchools();
         return ApiResponse.getResponse(true,

@@ -1,7 +1,8 @@
 package com.example.demo.security;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -11,9 +12,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final JwtAuthFilter jwtAuthFilter;
+    private final JwtFilter jwtAuthFilter;
 
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
+
+
+    public SecurityConfig(JwtFilter jwtAuthFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
     }
 
@@ -24,14 +27,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/teacher/**").hasRole("TEACHER")
-                .requestMatchers("/student/**").hasRole("STUDENT")
-                .requestMatchers("/admin/curriculums/**")
-                .hasAnyRole("ADMIN", "TEACHER")
                 .anyRequest().authenticated()
             )
-
             .addFilterBefore(jwtAuthFilter,
                     UsernamePasswordAuthenticationFilter.class)
             .formLogin(form -> form.disable())

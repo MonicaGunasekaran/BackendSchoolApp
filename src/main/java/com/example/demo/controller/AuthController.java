@@ -1,8 +1,13 @@
 package com.example.demo.controller;
-import com.example.demo.service.AuthService;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.DTO.*;
-import org.springframework.web.bind.annotation.*;
+import com.example.demo.DTO.LoginRequest;
+import com.example.demo.DTO.LoginResponse;
+import com.example.demo.service.AuthService;
 
 @RestController
 @RequestMapping("/auth")
@@ -13,7 +18,6 @@ public class AuthController {
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
-
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
         return authService.login(request);

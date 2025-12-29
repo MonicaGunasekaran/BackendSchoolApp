@@ -42,6 +42,7 @@ public class AdminTeacherService {
             ));
 
         User teacher = User.builder()
+        		.name(request.getName())
             .email(request.getEmail())
             .password(passwordEncoder.encode(request.getPassword()))
             .role(RolesEnum.TEACHER)
@@ -52,6 +53,7 @@ public class AdminTeacherService {
 
         return new TeacherResponse(
             saved.getId(),
+            saved.getName(),
             saved.getEmail(),
             saved.getSchoolId()
         );
