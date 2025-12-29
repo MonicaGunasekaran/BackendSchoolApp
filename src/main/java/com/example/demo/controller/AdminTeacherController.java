@@ -31,8 +31,7 @@ public class AdminTeacherController {
     public ResponseEntity<Map<String,Object>> createTeacher(
             @PathVariable UUID schoolId,
             @RequestBody CreateTeacher request) {
-        TeacherResponse response =
-                adminTeacherService.createTeacher(schoolId, request);
+        TeacherResponse response = adminTeacherService.createTeacher(schoolId, request);
 
             return ApiResponse.getResponse(true,
                 "Teacher created successfully",

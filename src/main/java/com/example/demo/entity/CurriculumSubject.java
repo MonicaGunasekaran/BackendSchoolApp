@@ -10,8 +10,7 @@ import java.util.UUID;
     name = "curriculum_subjects",
     uniqueConstraints = {
         @UniqueConstraint(columnNames = {"curriculum_id", "subject_id"})
-    }
-)
+    })
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

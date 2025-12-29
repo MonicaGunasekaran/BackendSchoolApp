@@ -82,12 +82,14 @@ public class TeacherStudentService {
         StudentEntity savedProfile =
                 studentRepository.save(profile);
 
-        return new Student(
-                savedProfile.getId(),
-                savedProfile.getName(),
-                savedProfile.getRollNumber(),
-                savedProfile.getClassId()
-        );
+        return Student.builder()
+        	    .studentId(savedProfile.getId())
+        	    .name(savedProfile.getName())
+        	    .rollNumber(savedProfile.getRollNumber())
+        	    .classId(savedProfile.getClassId())
+        	    .schoolId(savedProfile.getSchoolId())
+        	    .userID(savedProfile.getUserId())
+        	    .build();
 
     }
     public List<Student> getStudents(UUID classId) {

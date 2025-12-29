@@ -38,7 +38,7 @@ public class AdminCurriculumSubjectService {
 
         for (UUID subjectId : request.getSubjectIds()) {
 
-            Subject subject = subjectRepository.findById(subjectId)
+        Subject subject = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new ServiceException(
                 		 "Subject not found",HttpStatus.NOT_FOUND));
 

@@ -20,13 +20,10 @@ import com.example.demo.service.TeacherStudentService;
 @RestController
 @RequestMapping("/teacher/classes/{classId}/students")
 public class TeacherStudentController {
-
     private final TeacherStudentService teacherStudentService;
-
     public TeacherStudentController(TeacherStudentService teacherStudentService) {
         this.teacherStudentService = teacherStudentService;
     }
-
     @PreAuthorize("hasRole('TEACHER')")
     @PostMapping
     public ResponseEntity<Map<String,Object>> createStudent(

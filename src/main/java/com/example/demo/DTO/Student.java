@@ -2,6 +2,7 @@ package com.example.demo.DTO;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,10 +25,10 @@ public class Student {
     private UUID userID;
 
     // REQUEST ONLY
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String email;
 
-    @JsonIgnore
+    @JsonProperty(access=JsonProperty.Access.WRITE_ONLY)
     private String password;
     
 

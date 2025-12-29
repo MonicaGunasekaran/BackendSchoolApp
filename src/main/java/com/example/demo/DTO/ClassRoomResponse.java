@@ -7,9 +7,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-
 public class ClassRoomResponse {
-    private UUID classRoomId;
-    private String grade;
+    private UUID classId;
+    private Integer grade;
     private String section;
 }
