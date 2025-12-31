@@ -8,18 +8,13 @@ import com.example.demo.DTO.SubjectResponse;
 import com.example.demo.common.ServiceException;
 import com.example.demo.entity.Subject;
 import com.example.demo.repository.SubjectRepository;
-
 @Service
 public class AdminSubjectService {
-
     private final SubjectRepository subjectRepository;
-
     public AdminSubjectService(SubjectRepository subjectRepository) {
         this.subjectRepository = subjectRepository;
     }
-
     public Subject createSubject(CreateSubject request) {
-
         if (subjectRepository.findAll()
                 .stream()
                 .anyMatch(s -> s.getName().equalsIgnoreCase(request.getName()))) {
@@ -29,7 +24,6 @@ public class AdminSubjectService {
                 
             );
         }
-
         Subject subject = Subject.builder()
                 .name(request.getName())
                 .build();

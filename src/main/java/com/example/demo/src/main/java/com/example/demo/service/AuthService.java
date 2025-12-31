@@ -1,0 +1,50 @@
+package com.example.demo.service;
+
+import com.example.demo.*;
+import com.example.demo.security.CustomUserDetails;
+import com.example.demo.util.JwtUtil;
+
+import com.example.demo.DTO.*;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthService {
+
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+
+    public AuthService(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+    }
+
+    public LoginResponse login(LoginRequest request) {
+        try {
+            Authentication authentication =
+                authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                    )
+                );
+
+            CustomUserDetails userDetails =
+                (CustomUserDetails) authentication.getPrincipal();
+
+            String token = jwtUtil.generateToken(userDetails.getUser());
+
+            return new LoginResponse(
+                token,
+                userDetails.getUser().getRole().name()
+            );
+
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid email or password");
+        }
+    }
+
+}

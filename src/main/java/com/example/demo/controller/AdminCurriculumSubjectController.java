@@ -15,14 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.DTO.AddSubjectsToCurriculum;
 import com.example.demo.common.ApiResponse;
 import com.example.demo.service.AdminCurriculumSubjectService;
-
 @RestController
 @RequestMapping("/admin/curriculums")
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminCurriculumSubjectController {
-
     private final AdminCurriculumSubjectService service;
-
     public AdminCurriculumSubjectController(AdminCurriculumSubjectService service) {
         this.service = service;
     }
@@ -31,9 +28,7 @@ public class AdminCurriculumSubjectController {
     public ResponseEntity<Map<String, Object>> addSubjects(
             @PathVariable UUID curriculumId,
             @RequestBody AddSubjectsToCurriculum request) {
-
         service.addSubjects(curriculumId, request);
-
         return ApiResponse.getResponse(
         		true,
                 "Subjects added to curriculum successfully",

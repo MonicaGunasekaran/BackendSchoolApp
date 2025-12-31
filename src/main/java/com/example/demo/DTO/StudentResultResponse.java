@@ -1,8 +1,6 @@
 package com.example.demo.DTO;
-
 import java.util.List;
 import java.util.UUID;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 @Data

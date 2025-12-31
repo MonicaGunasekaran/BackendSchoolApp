@@ -7,12 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import lombok.Data;
-
-
 @Data
-
 public class ApiResponse {
-
     public static ResponseEntity<Map<String, Object>> getResponse(
             boolean success, String message, Object data) {
 

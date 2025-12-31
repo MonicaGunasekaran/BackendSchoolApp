@@ -20,34 +20,27 @@ import com.example.demo.service.AdminSubjectService;
 @RestController
 @RequestMapping("/admin/subjects")
 public class AdminSubjectController {
-
     private final AdminSubjectService adminSubjectService;
-
     public AdminSubjectController(AdminSubjectService adminSubjectService) {
         this.adminSubjectService = adminSubjectService;
     }
-
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Map<String,Object>> createSubject(
             @RequestBody CreateSubject request) {
 
         Subject subject = adminSubjectService.createSubject(request);
-
         return ApiResponse.getResponse(
         		true,
                 "Subject created successfully",
                 subject
         );
     }
-
     @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
     @GetMapping
     public ResponseEntity<Map<String,Object>> getAllSubjects() {
-
         List<SubjectResponse> subjects =
                 adminSubjectService.getAllSubjects();
-
         return ApiResponse.getResponse(true,
                 "Subjects fetched successfully",
                 subjects

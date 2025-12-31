@@ -1,10 +1,12 @@
 package com.example.demo.controller;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,9 +22,7 @@ import com.example.demo.service.AdminTeacherService;
 @PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/admin/schools/{schoolId}/teachers")
 public class AdminTeacherController {
-
     private final AdminTeacherService adminTeacherService;
-
     public AdminTeacherController(AdminTeacherService adminTeacherService) {
         this.adminTeacherService = adminTeacherService;
     }
@@ -32,11 +32,15 @@ public class AdminTeacherController {
             @PathVariable UUID schoolId,
             @RequestBody CreateTeacher request) {
         TeacherResponse response = adminTeacherService.createTeacher(schoolId, request);
-
             return ApiResponse.getResponse(true,
                 "Teacher created successfully",
                 response
             );
-
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    public ResponseEntity<Map<String,Object>> getAllTeacherBySchool( @PathVariable UUID schoolId){
+    List<TeacherResponse> response=adminTeacherService.getAllTeachers(schoolId);
+    	return ApiResponse.getResponse(true, "Teachers fetched successfully", response);
     }
 }

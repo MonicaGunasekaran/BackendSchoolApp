@@ -17,7 +17,6 @@ public class AdminCurriculumService {
     public AdminCurriculumService(CurriculumRepository curriculumRepository) {
         this.curriculumRepository = curriculumRepository;
     }
-
     public Curriculum createCurriculum(CreateCurriculum request) {
 
         if (curriculumRepository.findByGradeAndSection(
@@ -28,7 +27,6 @@ public class AdminCurriculumService {
                 
             );
         }
-
         Curriculum curriculum = Curriculum.builder()
                 .grade(request.getGrade())
                 .section(request.getSection())
@@ -37,15 +35,12 @@ public class AdminCurriculumService {
         return curriculumRepository.save(curriculum);
     }
     public List<CurriculumResponse> getAllCurriculums() {
-
         List<Curriculum> curriculums = curriculumRepository.findAll();
-
         return curriculums.stream()
                 .map(c -> new CurriculumResponse(
                         c.getId(),
                         c.getGrade(),
                         c.getSection()
-                ))
-                .collect(Collectors.toList());
+                )).collect(Collectors.toList());
     }
 }
